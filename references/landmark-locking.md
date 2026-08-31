@@ -23,6 +23,12 @@ Uncertainty: <occluded or unverifiable parts, if any>
 
 Generate layers 1 and 2 only. Removal of layers 3 and 4 must not remove a structurally necessary component from layer 2.
 
+## Ambiguity decision gate
+
+Before generation, enumerate plausible architecture or engineering targets when the request has not named one. If two or more remain, ask the user which one to transform. Visual dominance is not intent: the largest, nearest, brightest, or most centered structure may be a distractor.
+
+For example, a road photo that contains two large cooling towers on the left and the distant Minpu Bridge pylons on the right is ambiguous without a named target. Ask whether to transform the cooling towers or Minpu Bridge. If the user says `闵浦大桥`, lock the smaller right-side bridge pylons, deck, and cable system and exclude the cooling towers completely.
+
 ## Composite landmarks
 
 Define a minimum complete set. For example, the tested Nanpu Bridge scope is:
