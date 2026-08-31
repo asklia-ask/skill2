@@ -1,7 +1,7 @@
 interface:
   display_name: "地标微缩模型"
   short_description: "从复杂场景照片中准确锁定地标并转绘为收藏级建筑微缩模型"
-  default_prompt: "Use $landmark-miniature-model to isolate the requested landmark from this photo and render it as a collectible miniature model."
+  default_prompt: "Use $landmark-miniature-model to lock the requested landmark, then output both its isolated miniature model and a 1200×1600 comparison poster; ask which target to use first when the scene is ambiguous."
 
 policy:
   allow_implicit_invocation: true
