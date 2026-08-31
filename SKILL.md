@@ -1,11 +1,20 @@
 ---
 name: landmark-miniature-model
-description: Isolate a named landmark or distinctive building from a complex source photo, preserve its structural identity, and render it as a collectible miniature architectural model with an optional comparison poster. Use for 地标转绘、建筑微缩模型、复杂画面主体锁定, including composite bridges; not for generic city dioramas or arbitrary photo stylization.
+description: Isolate a named landmark or distinctive building from a complex source photo, preserve its structural identity, and render it as a collectible miniature architectural model plus a standardized comparison poster. Use for 地标转绘、建筑微缩模型、复杂画面主体锁定, including composite bridges; not for generic city dioramas or arbitrary photo stylization.
 ---
 
 # Landmark Miniature Model
 
 Turn the requested landmark—not the whole scene—into a clean collectible architectural miniature. Treat the source photo as authoritative for identity and any supplied examples as style-only references.
+
+## Standard Output Contract
+
+For a normal source-photo request, deliver **both** outputs:
+
+1. the isolated miniature model;
+2. a deterministic `1200×1600` comparison poster containing the unchanged source photo above and the miniature below.
+
+Model-only output is allowed only when the user explicitly asks to omit the poster. An image-generation result is an intermediate artifact: do not finish the task immediately after generation. Copy or save the model to the output workspace, measure it, run the composition script, inspect the poster, and report both file paths.
 
 ## Inputs
 
@@ -13,10 +22,10 @@ Identify:
 
 - The source photo and requested landmark.
 - Any local style-reference folder or images.
-- Whether the user wants the isolated model, a comparison poster, or both.
+- Whether the user explicitly opts out of the default comparison poster.
 - The output location. Never overwrite source photos.
 
-If several landmarks are plausible and the request does not identify one, ask for the target. Otherwise proceed from visual evidence.
+If the request does not identify a target and the scene contains more than one plausible architectural or engineering subject, stop before generation and ask one concise target question. Do not choose by apparent size, contrast, filename, or visual dominance. If the user names a target, lock that structure even when a larger distractor occupies more of the image.
 
 ## Workflow
 
@@ -43,9 +52,9 @@ If several landmarks are plausible and the request does not identify one, ask fo
 - Keep the full miniature visible and centered. Avoid people, vehicles, vegetation, skyline, water, terrain dioramas, labels, plaques, logos, and watermarks unless the user explicitly requests them.
 - Favor refined physical materials and credible small-scale construction. Avoid glossy plastic, toy-block proportions, fantasy ornament, and geometry copied from a style reference.
 
-## Comparison Poster
+## Standard Comparison Poster
 
-When requested, first generate the isolated model, then compose the poster deterministically with [scripts/compose-comparison.ps1](scripts/compose-comparison.ps1):
+Unless the user explicitly requests model-only output, first generate the isolated model, then compose the poster deterministically with [scripts/compose-comparison.ps1](scripts/compose-comparison.ps1). Do not ask the image generator to draw the two-panel poster.
 
 - Canvas: `1200×1600`; top and bottom panels: `1200×800` each.
 - Top: the original photo, aspect-filled to `3:2` with no stretching or side bars. Use the landmark as crop focus.
@@ -64,13 +73,15 @@ Inspect the generated model and estimate two source-pixel rectangles: `ModelBoun
 
 Inspect the poster visually after running it. Adjust the crop focus or measured bounds only when the image shows a concrete layout error.
 
+Do not mark the task complete unless the script report confirms all four bottom-panel margins are at least `20%`, the horizontal and vertical center offsets are no more than `1 px`, the top panel is the unredrawn source photo, and both output files exist. If composition cannot be run, report that blocker instead of silently returning only the isolated model.
+
 ## Deliverables
 
-Use clear revisioned filenames such as:
+By default, return exactly two image deliverables, plus a report only when testing or revising the workflow. Use clear revisioned filenames such as:
 
 - `01-地标名-模型-r1.png`
 - `01-地标名-对照海报-r1.png`
 - `调试报告.md` when testing or revising the workflow
 
-Report the lock decision, QA result, known uncertainty, final file paths, and whether the Skill itself was changed. Keep sources read-only.
+Report the lock decision, content QA result, layout measurements, known uncertainty, final file paths, and whether the Skill itself was changed. Keep sources read-only.
 
