@@ -20,6 +20,11 @@ Use explicit negative confusions that are plausible for the target. For a cable-
 
 ## QA order
 
+### 0. Target decision gate
+
+- A named target is locked even when it is small or visually subordinate.
+- An unnamed target with multiple plausible candidates requires a user choice before generation.
+
 ### 1. Hard gates
 
 - Correct target selected.
@@ -49,4 +54,17 @@ Revise only the failed criterion. Preserve already-correct geometry, material, b
 - reduce glossy plastic appearance without changing geometry.
 
 After two unsuccessful targeted revisions for the same source, stop and report which identity evidence is too weak or which image-generation behavior remains unstable.
+
+## Comparison-poster exit gate
+
+For the standard workflow, generation is not completion. After the isolated model passes content QA:
+
+- compose the poster with `scripts/compose-comparison.ps1`, never by generative redrawing;
+- retain the source photo unchanged in the top panel, using only an aspect-fill crop;
+- confirm bottom-panel left, right, top, and bottom margins are each at least `20%`;
+- confirm horizontal and vertical center offsets are each at most `1 px`;
+- visually inspect for clipped structure, keyed-background halos, stretching, side bars, or the wrong photo crop;
+- return both the isolated-model path and comparison-poster path.
+
+If any item fails, revise the crop or bounds and rerun. Do not present the isolated model alone as a completed standard result.
 
