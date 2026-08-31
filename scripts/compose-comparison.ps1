@@ -262,6 +262,7 @@ function New-LayoutTest {
     $bottom = 100.0 * ($PanelHeight - $targetObjectY - $targetObjectHeight) / $PanelHeight
     $centerX = ($targetObjectX + $targetObjectWidth / 2.0) - $CanvasWidth / 2.0
     $centerY = ($targetObjectY + $targetObjectHeight / 2.0) - $PanelHeight / 2.0
+    $layoutPass = ($left -ge 20.0 -and $right -ge 20.0 -and $top -ge 20.0 -and $bottom -ge 20.0 -and [Math]::Abs($centerX) -le 1.0 -and [Math]::Abs($centerY) -le 1.0)
 
     $photo.Dispose()
     $model.Dispose()
@@ -277,6 +278,7 @@ function New-LayoutTest {
         BottomPct = [Math]::Round($bottom, 2)
         CenterXPx = [Math]::Round($centerX, 2)
         CenterYPx = [Math]::Round($centerY, 2)
+        LayoutPass = $layoutPass
     }
 }
 
@@ -320,5 +322,8 @@ finally {
 }
 
 $result = New-LayoutTest -PhotoPath $PhotoPath -ModelPath $ModelPath -OutputPath $OutputPath -PhotoFocusX $PhotoFocusX -PhotoFocusY $PhotoFocusY -ModelBounds $boundsRectangle -ModelCrop $cropRectangle -FitBy $FitBy
+if (-not $result.LayoutPass) {
+    throw "Layout QA failed: $($result | ConvertTo-Json -Compress)"
+}
 $result | ConvertTo-Json -Depth 3
 
